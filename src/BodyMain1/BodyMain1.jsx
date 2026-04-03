@@ -1,10 +1,70 @@
+import { useState, useEffect } from "react";
 import "./BodyMain1.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
 import { faGlobe } from "@fortawesome/free-solid-svg-icons";
 import { faHighlighter } from "@fortawesome/free-solid-svg-icons";
 
 function BodyMain1() {
+  const [longUrl, setLongUrl] = useState("");
+  const [shortUrl, setShortUrl] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [recentLinks, setRecentLinks] = useState([]);
+
+  useEffect(() => {
+    fetch("/urls")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.ok) {
+          setRecentLinks(
+            data.urls.map((u) => ({
+              longUrl: u.longUrl,
+              shortUrl: `http://localhost:5050/${u.shortId}`,
+            })),
+          );
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+    setShortUrl("");
+    setLoading(true);
+    try {
+      const res = await fetch("/save", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ longUrl }),
+      });
+      const data = await res.json();
+      if (data.ok) {
+        setShortUrl(data.shortURL);
+        setRecentLinks((prev) =>
+          [{ longUrl, shortUrl: data.shortURL }, ...prev].slice(0, 5),
+        );
+        setLongUrl("");
+      } else {
+        setError("Something went wrong. Please try again.");
+      }
+    } catch {
+      setError("Could not reach the server. Make sure the backend is running.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async (shortUrl) => {
+    const shortId = shortUrl.split("/").pop();
+    try {
+      await fetch(`/urls/${shortId}`, { method: "DELETE" });
+      setRecentLinks((prev) => prev.filter((l) => l.shortUrl !== shortUrl));
+    } catch {
+      // silently fail
+    }
+  };
+
   return (
     <div className="body-part1">
       {/* Main Body Left Part */}
@@ -39,10 +99,39 @@ function BodyMain1() {
         <div className="main-body-bottom">
           <h2>Your Recent Links:</h2>
 
-          <div className="recent-links-alert">
-            <i className="fa-solid fa-circle-exclamation alert-icon"></i>
-            No links yet in your history
-          </div>
+          {recentLinks.length === 0 ? (
+            <div className="recent-links-alert">
+              <i className="fa-solid fa-circle-exclamation alert-icon"></i>
+              No links yet in your history
+            </div>
+          ) : (
+            <div className="recent-links-list">
+              {recentLinks.map((link, i) => (
+                <div className="recent-link-item" key={i}>
+                  <span className="recent-link-long">
+                    {link.longUrl.length > 40
+                      ? link.longUrl.slice(0, 40) + "…"
+                      : link.longUrl}
+                  </span>
+                  <a
+                    className="recent-link-short"
+                    href={link.shortUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    {link.shortUrl}
+                  </a>
+                  <button
+                    className="delete-link-btn"
+                    onClick={() => handleDelete(link.shortUrl)}
+                    title="Remove"
+                  >
+                    <i className="fa-solid fa-trash"></i>
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 
@@ -65,10 +154,7 @@ function BodyMain1() {
 
         {/* Rightside Box */}
         <div className="Rightside-box">
-          <form
-            className="body-p-right-form"
-            onSubmit={(e) => e.preventDefault()}
-          >
+          <form className="body-p-right-form" onSubmit={handleSubmit}>
             {/* Input 1 */}
             <div className="bpr-form-input1">
               <label className="bpr-form-label" htmlFor="user-url">
@@ -85,6 +171,8 @@ function BodyMain1() {
                 name="user-rule"
                 id="user-url"
                 placeholder="Paste your long URL here"
+                value={longUrl}
+                onChange={(e) => setLongUrl(e.target.value)}
                 required
               />
             </div>
@@ -125,7 +213,6 @@ function BodyMain1() {
                   name="alias-rule"
                   id="alias-url"
                   placeholder="Add alias here"
-                  required
                 />
                 <br />
                 <label className="bpr-form-4" htmlFor="alias-url">
@@ -133,15 +220,37 @@ function BodyMain1() {
                 </label>
               </div>
             </div>
+
+            <button
+              type="submit"
+              className="bpr-form-submit-btn"
+              disabled={loading}
+            >
+              {loading ? "Shortening..." : "Shorten Link"}
+            </button>
+            <br />
+            {shortUrl && (
+              <div className="short-url-result">
+                <span>Short URL: </span>
+                <a href={shortUrl} target="_blank" rel="noreferrer">
+                  {shortUrl}
+                </a>
+                <button
+                  type="button"
+                  className="copy-btn"
+                  onClick={() => navigator.clipboard.writeText(shortUrl)}
+                >
+                  Copy
+                </button>
+              </div>
+            )}
+            {error && <p className="short-url-error">{error}</p>}
+            <br />
+            <p className="bpr-form-p-terms">
+              By clicking Shorten Link, you agree with our Terms of Service,
+              Privacy Policy, <br /> and Use of Cookies.
+            </p>
           </form>
-          <button type="submit" className="bpr-form-submit-btn">
-            Shorten Link
-          </button>
-          <br />
-          <p className="bpr-form-p-terms">
-            By clicking Shorten Link, you agree with our Terms of Service,
-            Privacy Policy, <br /> and Use of Cookies.
-          </p>
         </div>
       </div>
     </div>

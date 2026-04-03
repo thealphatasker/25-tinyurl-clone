@@ -2,18 +2,24 @@
 
 .body-part1 {
   background-color: #002342;
-  height: 550px;
+  min-height: 550px;
   color: white;
-  padding: 6.5rem 2rem 2rem 6rem;
+  padding: 6.5rem 4rem 3rem 6rem;
   display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .body-p-left {
-  margin: 20px 0px 20px 50px;
+  flex: 1;
+  min-width: 0;
+  margin-right: 2rem;
 }
 
 .body-p-right {
-  margin: 0px 60px 20px 0px;
+  flex-shrink: 0;
 }
 
 .bpl-heading {
@@ -40,6 +46,7 @@
   background-color: #dee2e6;
   margin-right: 1.2rem;
   font-weight: 500;
+  cursor: pointer;
 }
 .bpl-btn-plans:hover {
   background-color: #dee2e6bb;
@@ -55,19 +62,21 @@
   background-color: #0d7693;
   color: white;
   font-weight: 500;
+  cursor: pointer;
 }
 .bpl-btn-account:hover {
   background-color: #07637dc5;
   transition: all 0.2s;
 }
 
-/* Right side FORM*/
+/* Right side FORM */
 .Rightside-box {
-  height: 341px;
   width: 500px;
   background-color: #f8f9fa;
   border: none;
   border-radius: 0px 0px 5px 5px;
+  box-sizing: border-box;
+  padding-bottom: 16px;
 }
 .bpr-shorten-btn {
   height: 50px;
@@ -76,6 +85,7 @@
   border: none;
   border-radius: 5px 5px 0px 0px;
   font-weight: 600;
+  cursor: pointer;
 }
 .bpr-shorten-btn-icon {
   margin: 10px;
@@ -89,6 +99,7 @@
   border: none;
   border-radius: 5px 5px 0px 0px;
   font-weight: 600;
+  cursor: pointer;
 }
 .bpr-qr-btn-icon {
   margin: 10px;
@@ -111,11 +122,12 @@
 
 .bpr-form-input {
   height: 28px;
-  width: 450px;
+  width: calc(100% - 44px);
   margin: 0px 0px 5px 22px;
   border: 1px solid rgba(0, 0, 0, 0.272);
   border-radius: 3px;
   font-weight: 600;
+  box-sizing: border-box;
 }
 
 .bpr-form-select {
@@ -128,14 +140,12 @@
   font-weight: 500;
 }
 
-#bpr-form-para {
-  color: black;
-  font-weight: 600;
-}
-
 .bpr-form-4 {
   color: black;
   font-size: 8px;
+  margin-left: 22px;
+  margin-top: 0px;
+  display: block;
 }
 
 .bpr-form-input2 {
@@ -155,35 +165,60 @@
   display: flex;
 }
 
-.bpr-form-4 {
-  margin-left: 22px;
-  margin-top: 0px;
-}
-
 .bpr-form-p2-input2 {
   margin-left: 29px;
-}
-
-.body-part1 {
-  display: flex;
-  justify-content: space-between;
 }
 
 /* Form Submit button */
 .bpr-form-submit-btn {
   height: 38px;
-  width: 458px;
-  margin: 35px 0px 15px 22px;
+  width: calc(100% - 44px);
+  margin: 20px 0px 10px 22px;
   border: 1px solid rgba(0, 0, 0, 0.272);
   border-radius: 3px;
   background-color: #1f8244;
   color: white;
   font-size: 1rem;
   font-weight: 600;
+  cursor: pointer;
+  box-sizing: border-box;
 }
 .bpr-form-submit-btn:hover {
   background-color: #186334;
   transition: all 0.2s;
+}
+
+/* Short URL result */
+.short-url-result {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 8px 22px 0px 22px;
+  font-size: 13px;
+  color: #1a1a1a;
+  font-weight: 600;
+  flex-wrap: wrap;
+}
+.short-url-result a {
+  color: #0d7693;
+  word-break: break-all;
+}
+.copy-btn {
+  background: #0d7693;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  padding: 2px 8px;
+  font-size: 12px;
+  cursor: pointer;
+}
+.copy-btn:hover {
+  background: #07637d;
+}
+.short-url-error {
+  color: #c0392b;
+  font-size: 12px;
+  margin: 6px 22px 0px 22px;
 }
 
 /* Para after submit button */
@@ -191,12 +226,12 @@
   color: black;
   font-size: 11.5px;
   font-style: italic;
-  margin: 10px 0px 0px 22px;
+  margin: 10px 22px 0px 22px;
 }
 
 /* Main Body Bottom Part */
 .main-body-bottom {
-  margin-top: 60px;
+  margin-top: 40px;
 }
 
 .recent-links-alert {
@@ -209,13 +244,64 @@
   font-weight: 600;
   font-size: 15px;
   margin-top: 15px;
-  height: 15px;
-  width: 1130px;
-  position: absolute;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .alert-icon {
   margin-right: 12px;
   font-size: 16px;
+}
+
+/* Recent links list */
+.recent-links-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 15px;
+  width: 100%;
+}
+.recent-link-item {
+  background-color: white;
+  color: #1a1a1a;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  box-sizing: border-box;
+  gap: 16px;
+}
+.recent-link-long {
+  color: #555;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+}
+.recent-link-short {
+  color: #0d7693;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* Delete button on recent link items */
+.delete-link-btn {
+  background: transparent;
+  border: none;
+  color: #c0392b;
+  cursor: pointer;
+  font-size: 14px;
+  flex-shrink: 0;
+  padding: 4px 6px;
+  border-radius: 3px;
+  transition: background 0.2s;
+}
+.delete-link-btn:hover {
+  background: rgba(192, 57, 43, 0.1);
 }
