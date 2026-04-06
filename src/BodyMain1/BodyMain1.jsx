@@ -4,6 +4,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGlobe } from "@fortawesome/free-solid-svg-icons";
 import { faHighlighter } from "@fortawesome/free-solid-svg-icons";
 
+const API_BASE = import.meta.env.VITE_API_BASE || "";
+
 function BodyMain1() {
   const [longUrl, setLongUrl] = useState("");
   const [shortUrl, setShortUrl] = useState("");
@@ -12,14 +14,14 @@ function BodyMain1() {
   const [recentLinks, setRecentLinks] = useState([]);
 
   useEffect(() => {
-    fetch("/urls")
+    fetch(`${API_BASE}/urls`)
       .then((res) => res.json())
       .then((data) => {
         if (data.ok) {
           setRecentLinks(
             data.urls.map((u) => ({
               longUrl: u.longUrl,
-              shortUrl: `http://localhost:5050/${u.shortId}`,
+              shortUrl: `${API_BASE}/${u.shortId}`,
             })),
           );
         }
@@ -33,7 +35,7 @@ function BodyMain1() {
     setShortUrl("");
     setLoading(true);
     try {
-      const res = await fetch("/save", {
+      const res = await fetch(`${API_BASE}/save`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ longUrl }),
@@ -58,7 +60,7 @@ function BodyMain1() {
   const handleDelete = async (shortUrl) => {
     const shortId = shortUrl.split("/").pop();
     try {
-      await fetch(`/urls/${shortId}`, { method: "DELETE" });
+      await fetch(`${API_BASE}/urls/${shortId}`, { method: "DELETE" });
       setRecentLinks((prev) => prev.filter((l) => l.shortUrl !== shortUrl));
     } catch {
       // silently fail
