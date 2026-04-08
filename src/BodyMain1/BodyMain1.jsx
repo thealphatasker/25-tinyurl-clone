@@ -4,7 +4,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGlobe } from "@fortawesome/free-solid-svg-icons";
 import { faHighlighter } from "@fortawesome/free-solid-svg-icons";
 
-const API_BASE = import.meta.env.VITE_API_BASE || "";
+const API_BASE =
+  import.meta.env.VITE_API_BASE || "https://tinyurl1.up.railway.app";
 
 function BodyMain1() {
   const [longUrl, setLongUrl] = useState("");
