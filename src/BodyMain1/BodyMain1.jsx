@@ -3,6 +3,7 @@ import "./BodyMain1.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGlobe } from "@fortawesome/free-solid-svg-icons";
 import { faHighlighter } from "@fortawesome/free-solid-svg-icons";
+import toast from "react-hot-toast";
 
 const API_BASE =
   import.meta.env.VITE_API_BASE || "https://tinyurl1.up.railway.app";
@@ -73,8 +74,9 @@ function BodyMain1() {
     try {
       await fetch(`${API_BASE}/urls/${shortId}`, { method: "DELETE" });
       setRecentLinks((prev) => prev.filter((l) => l.shortUrl !== shortUrl));
+      toast.success("Link deleted successfully!");
     } catch {
-      // silently fail
+      toast.error("Failed to delete link");
     }
   };
 
@@ -251,7 +253,10 @@ function BodyMain1() {
                 <button
                   type="button"
                   className="copy-btn"
-                  onClick={() => navigator.clipboard.writeText(shortUrl)}
+                  onClick={() => {
+                    navigator.clipboard.writeText(shortUrl);
+                    toast.success("Link copied to clipboard!");
+                  }}
                 >
                   Copy
                 </button>
