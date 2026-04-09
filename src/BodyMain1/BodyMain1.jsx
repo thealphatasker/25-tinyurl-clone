@@ -35,17 +35,27 @@ function BodyMain1() {
     setError("");
     setShortUrl("");
     setLoading(true);
+
+    // Normalize URL: add https:// if no protocol is present
+    let normalizedUrl = longUrl.trim();
+    if (!/^https?:\/\//i.test(normalizedUrl)) {
+      normalizedUrl = `https://${normalizedUrl}`;
+    }
+
     try {
       const res = await fetch(`${API_BASE}/save`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ longUrl }),
+        body: JSON.stringify({ longUrl: normalizedUrl }),
       });
       const data = await res.json();
       if (data.ok) {
         setShortUrl(data.shortURL);
         setRecentLinks((prev) =>
-          [{ longUrl, shortUrl: data.shortURL }, ...prev].slice(0, 5),
+          [{ longUrl: normalizedUrl, shortUrl: data.shortURL }, ...prev].slice(
+            0,
+            5,
+          ),
         );
         setLongUrl("");
       } else {
